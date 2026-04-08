@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Extension Icons</title>
+</head>
+<body>
+  <h1>Extension Icon Generator</h1>
+  <p>Right-click each icon and "Save image as..." to the icons folder</p>
+  <div id="icons"></div>
+  <script>
+    const sizes = [16, 48, 128];
+
+    sizes.forEach(size => {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      ctx.fillStyle = '#4361ee';
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Microphone icon
+      ctx.strokeStyle = 'white';
+      ctx.fillStyle = 'white';
+      ctx.lineWidth = size / 12;
+      ctx.lineCap = 'round';
+
+      const cx = size / 2;
+      const cy = size / 2;
+      const micWidth = size / 4;
+      const micHeight = size / 2.5;
+
+      // Mic body
+      ctx.beginPath();
+      ctx.roundRect(cx - micWidth/2, cy - micHeight/2, micWidth, micHeight, micWidth/2);
+      ctx.fill();
+
+      // Stand
+      ctx.beginPath();
+      ctx.arc(cx, cy + micHeight/4, micWidth * 0.8, 0, Math.PI);
+      ctx.stroke();
+
+      // Base line
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + micHeight/2);
+      ctx.lineTo(cx, cy + micHeight/2 + size/10);
+      ctx.stroke();
+
+      const container = document.createElement('div');
+      container.style.margin = '20px';
+      container.style.display = 'inline-block';
+      container.innerHTML = `<p>icon${size}.png</p>`;
+      container.appendChild(canvas);
+      document.getElementById('icons').appendChild(container);
+
+      // Also create download link
+      const link = document.createElement('a');
+      link.download = `icon${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.textContent = ` Download`;
+      container.appendChild(link);
+    });
+  </script>
+</body>
+</html>

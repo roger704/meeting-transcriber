@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+whisper-server/__pycache__/
+whisper-server/*.pyc
+
+# Build artifacts
+*.zip
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local model files
+*.bin
+*.pt
+*.onnx
+
+# Secrets (if any)
+.env
+*.key

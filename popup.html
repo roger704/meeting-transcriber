@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 420px;
+      min-height: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px 12px;
+      background: #16213e;
+      border-radius: 8px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #666;
+      flex-shrink: 0;
+    }
+
+    .status-dot.active {
+      background: #00d26a;
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-dot.loading {
+      background: #f9a825;
+      animation: pulse 0.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .controls button {
+      flex: 1;
+    }
+
+    #startBtn {
+      background: #4361ee;
+      color: white;
+    }
+
+    #startBtn:hover:not(:disabled) {
+      background: #3a56d4;
+    }
+
+    #stopBtn {
+      background: #e63946;
+      color: white;
+    }
+
+    #stopBtn:hover:not(:disabled) {
+      background: #c5303c;
+    }
+
+    .export-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .export-controls button {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 12px;
+      background: #2d3748;
+      color: #a0aec0;
+    }
+
+    .export-controls button:hover:not(:disabled) {
+      background: #3d4a5c;
+      color: #fff;
+    }
+
+    .transcript-container {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 12px;
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+    }
+
+    .transcript-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .transcript-header h2 {
+      font-size: 14px;
+      color: #888;
+    }
+
+    #copyBtn {
+      padding: 4px 8px;
+      font-size: 12px;
+      background: #333;
+      color: #fff;
+    }
+
+    #copyBtn:hover {
+      background: #444;
+    }
+
+    #transcript {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .transcript-entry {
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #2d3748;
+    }
+
+    .transcript-entry:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .transcript-time {
+      color: #666;
+      font-size: 11px;
+    }
+
+    .transcript-speaker {
+      color: #4361ee;
+      font-weight: 500;
+    }
+
+    .transcript-speaker.speaker-2 { color: #00d26a; }
+    .transcript-speaker.speaker-3 { color: #f9a825; }
+    .transcript-speaker.speaker-4 { color: #e91e63; }
+    .transcript-speaker.speaker-5 { color: #9c27b0; }
+
+    .empty-state {
+      color: #666;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .speakers-panel {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .speakers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .speakers-header h2 {
+      font-size: 14px;
+      color: #888;
+    }
+
+    .small-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      background: #333;
+      color: #888;
+    }
+
+    .small-btn:hover {
+      background: #444;
+      color: #fff;
+    }
+
+    .speaker-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid #2d3748;
+    }
+
+    .speaker-item:last-child {
+      border-bottom: none;
+    }
+
+    .speaker-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .speaker-input {
+      flex: 1;
+      padding: 4px 8px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .speaker-input:focus {
+      border-color: #4361ee;
+      outline: none;
+    }
+
+    .speaker-select {
+      flex: 1;
+      padding: 4px 8px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .error {
+      background: #3d1f1f;
+      color: #ff6b6b;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .settings {
+      border-top: 1px solid #2d3748;
+      padding-top: 12px;
+    }
+
+    .settings-toggle {
+      width: 100%;
+      background: transparent;
+      color: #888;
+      border: 1px solid #333;
+      font-size: 12px;
+    }
+
+    .settings-toggle:hover {
+      color: #fff;
+      border-color: #555;
+    }
+
+    .settings-panel {
+      margin-top: 12px;
+      padding: 12px;
+      background: #16213e;
+      border-radius: 8px;
+    }
+
+    .setting-group {
+      margin-bottom: 12px;
+    }
+
+    .setting-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .setting-group label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    .setting-group input[type="text"],
+    .setting-group input[type="password"],
+    .setting-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .setting-group select {
+      cursor: pointer;
+    }
+
+    .checkbox-label {
+      display: flex !important;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      width: auto;
+    }
+
+    .save-settings {
+      width: 100%;
+      margin-top: 12px;
+      background: #4361ee;
+      color: white;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .mode-info {
+      background: #1a1a2e;
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      <line x1="12" y1="19" x2="12" y2="23"/>
+      <line x1="8" y1="23" x2="16" y2="23"/>
+    </svg>
+    Meeting Transcriber
+  </h1>
+
+  <div class="status">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Not recording</span>
+  </div>
+
+  <div id="error" class="error" style="display: none;"></div>
+
+  <div class="controls">
+    <button id="startBtn">Start Recording</button>
+    <button id="stopBtn" disabled>Stop</button>
+  </div>
+
+  <div class="export-controls">
+    <button id="exportTxt" disabled>Export TXT</button>
+    <button id="exportSrt" disabled>Export SRT</button>
+    <button id="exportJson" disabled>Export JSON</button>
+  </div>
+
+  <div class="speakers-panel" id="speakersPanel" style="display: none;">
+    <div class="speakers-header">
+      <h2>Speakers</h2>
+      <button id="refreshParticipants" class="small-btn">Refresh</button>
+    </div>
+    <div id="speakersList"></div>
+  </div>
+
+  <div class="transcript-container">
+    <div class="transcript-header">
+      <h2>Transcript</h2>
+      <button id="copyBtn">Copy</button>
+    </div>
+    <div id="transcript">
+      <div class="empty-state">Click "Start Recording" to begin transcribing your meeting.</div>
+    </div>
+  </div>
+
+  <div class="settings">
+    <button id="settingsToggle" class="settings-toggle">Settings</button>
+    <div id="settingsPanel" class="settings-panel" style="display: none;">
+
+      <div class="setting-group">
+        <label>Transcription Mode</label>
+        <select id="transcriptionMode">
+          <option value="local">Local (Whisper.cpp - Free)</option>
+          <option value="openai">OpenAI Whisper API</option>
+          <option value="assemblyai">AssemblyAI (Best diarization)</option>
+        </select>
+        <div class="mode-info" id="modeInfo">
+          Runs entirely on your device. First use downloads ~40MB model.
+        </div>
+      </div>
+
+      <div class="setting-group" id="modelSizeGroup">
+        <label>Local Model Size</label>
+        <select id="modelSize">
+          <option value="tiny">Tiny (~40MB, fastest)</option>
+          <option value="base">Base (~75MB, balanced)</option>
+          <option value="small">Small (~250MB, most accurate)</option>
+        </select>
+      </div>
+
+      <div class="setting-group" id="openaiKeyGroup" style="display: none;">
+        <label>OpenAI API Key</label>
+        <input type="password" id="openaiKey" placeholder="sk-...">
+        <p class="hint">~$0.006/minute of audio</p>
+      </div>
+
+      <div class="setting-group" id="assemblyaiKeyGroup" style="display: none;">
+        <label>AssemblyAI API Key</label>
+        <input type="password" id="assemblyaiKey" placeholder="Your AssemblyAI key">
+        <p class="hint">Best speaker diarization, ~$0.01/minute</p>
+      </div>
+
+      <div class="setting-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="enableDiarization" checked>
+          Enable Speaker Diarization
+        </label>
+        <p class="hint">Identify different speakers in the transcript</p>
+      </div>
+
+      <button id="saveSettings" class="save-settings">Save Settings</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
