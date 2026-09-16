@@ -24,7 +24,7 @@ Open `generate-icons.html` in Chrome, then download the 3 PNG files to the `icon
 1. Go to `chrome://extensions/`
 2. Enable "Developer mode" (top right)
 3. Click "Load unpacked"
-4. Select the `recorder` folder
+4. Select this repository root (the folder containing `manifest.json`)
 
 ### 3. Set Up Transcription (choose one)
 
@@ -44,7 +44,7 @@ Leave the server running while using the extension.
 2. Open the extension popup → Settings
 3. Select "OpenAI Whisper API" and enter your key
 
-Cost: ~$0.006 per minute of audio
+Check current provider pricing before use.
 
 #### Option C: AssemblyAI
 
@@ -52,7 +52,7 @@ Cost: ~$0.006 per minute of audio
 2. Open the extension popup → Settings
 3. Select "AssemblyAI" and enter your key
 
-Cost: ~$0.01 per minute (best speaker diarization)
+Check current provider pricing before use.
 
 ## Usage
 
@@ -83,7 +83,7 @@ The extension uses two methods to identify speakers:
 
 ## Privacy & Legal
 
-This extension captures audio locally from your browser tab. No data is sent anywhere unless you configure an external API (OpenAI/AssemblyAI).
+This extension captures audio locally from your browser tab. Audio is sent to the transcription backend you select, including the local server when configured. External backends send audio to their providers; model assets may also be downloaded. Review the selected path before using sensitive audio.
 
 **Important**: Recording meetings without consent may violate:
 - Local laws (many jurisdictions require all-party consent)
@@ -110,3 +110,7 @@ recorder/
 ## License
 
 MIT
+
+## Maintainer documentation
+
+[Project guide: setup, architecture, verification and operations](docs/PROJECT.md) · [Changelogs](changelogs/README.md). The project guide distinguishes implemented behavior from proposals and live deployment evidence.
