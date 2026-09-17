@@ -23,3 +23,7 @@ Every actual deployment needs a distinct record under [changelogs](../changelogs
 ## Interfaces and further reading
 
 [Local transcription API](API.md). External provider prices and availability are not guaranteed by this repository.
+
+## Architecture diagrams
+
+Read [the current architecture and data-flow maps](diagrams/README.md) before planning changes. Proposed behavior is labeled separately from implemented behavior.
